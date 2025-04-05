@@ -1,0 +1,227 @@
+<!--My Games (games.anikethchavare.com) - tennis.html-->
+
+<!--Copyright 2025 Aniketh Chavare <anikethchavare.work@protonmail.com>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!--Meta-->
+        <meta charset="utf-8">
+        <meta name="description" content="This is a simple and interactive tennis game using JavaScript.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="Aniketh Chavare">
+        <meta name="copyright" content="Aniketh Chavare">
+
+        <!--Response Headers-->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-Security-Policy" content="style-src 'self' 'nonce-{{ css_nonce }}'; script-src 'self' 'nonce-{{ js_nonce }}'; img-src 'self' https://cdn-icons-png.flaticon.com/512/889/889494.png;">
+
+        <!--Title & Favicon-->
+        <title>Tennis | Aniketh Chavare</title>
+        <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/889/889494.png">
+
+        <!--CSS-->
+        <style nonce="{{ css_nonce }}">
+            /* Body */
+            body {
+                background-color: lightgreen;
+            }
+        </style>
+    </head>
+    <body>
+        <!--Canvas-->
+        <center><canvas id="gameCanvas" width="800" height="549"></canvas></center>
+
+        <!--JavaScript-->
+        <script nonce="{{ js_nonce }}">
+            // Variables
+            var canvas;
+            var canvasContext;
+            var ballX = 50;
+            var ballY = 50;
+            var ballSpeedX = 10;
+            var ballSpeedY = 4;
+
+            var player1Score = 0;
+            var player2Score = 0;
+            const WINNING_SCORE = 11;
+
+            var showingWinScreen = false;
+
+            var paddle1Y = 250;
+            var paddle2Y = 250;
+            const PADDLE_THICKNESS = 10;
+            const PADDLE_HEIGHT = 100;
+
+            // Function 1 - Calculate Mouse Position
+            function calculateMousePos(evt) {
+                var rect = canvas.getBoundingClientRect();
+                var root = document.documentElement;
+                var mouseX = evt.clientX - rect.left - root.scrollLeft;
+                var mouseY = evt.clientY - rect.top - root.scrollTop;
+                return {
+                    x:mouseX,
+                    y:mouseY
+                };
+            }
+
+            // Function 2 - Mouse Click (Handler)
+            function handleMouseClick(evt) {
+                if(showingWinScreen) {
+                    player1Score = 0;
+                    player2Score = 0;
+                    showingWinScreen = false;
+                }
+            }
+
+            window.onload = function() {
+                canvas = document.getElementById('gameCanvas');
+                canvasContext = canvas.getContext('2d');
+
+                var framesPerSecond = 30;
+                setInterval(function() {
+                        moveEverything();
+                        drawEverything();
+                    }, 1000/framesPerSecond);
+
+                canvas.addEventListener('mousedown', handleMouseClick);
+
+                canvas.addEventListener('mousemove',
+                    function(evt) {
+                        var mousePos = calculateMousePos(evt);
+                        paddle1Y = mousePos.y - (PADDLE_HEIGHT/2);
+                    });
+            }
+
+            // Function 3 - Reset the Ball
+            function ballReset() {
+                if(player1Score >= WINNING_SCORE ||
+                    player2Score >= WINNING_SCORE) {
+                    showingWinScreen = true;
+                }
+
+                ballSpeedX = -ballSpeedX;
+                ballX = canvas.width/2;
+                ballY = canvas.height/2;
+            }
+
+            // Function 4 - Get the Computer Movement
+            function computerMovement() {
+                var paddle2YCenter = paddle2Y + (PADDLE_HEIGHT/2);
+
+                if(paddle2YCenter < ballY - 35) {
+                    paddle2Y = paddle2Y + 6;
+                } else if(paddle2YCenter > ballY + 35) {
+                    paddle2Y = paddle2Y - 6;
+                }
+            }
+
+            // Function 5 - Move the Ball
+            function moveEverything() {
+                if(showingWinScreen) {
+                    return;
+                }
+
+                computerMovement();
+
+                ballX = ballX + ballSpeedX;
+                ballY = ballY + ballSpeedY;
+
+                if(ballX < 0) {
+                    if(ballY > paddle1Y &&
+                        ballY < paddle1Y+PADDLE_HEIGHT) {
+                        ballSpeedX = -ballSpeedX;
+
+                        var deltaY = ballY
+                                -(paddle1Y+PADDLE_HEIGHT/2);
+                        ballSpeedY = deltaY * 0.35;
+                    } else {
+                        player2Score++; // must be BEFORE ballReset()
+                        ballReset();
+                    }
+                }
+                if(ballX > canvas.width) {
+                    if(ballY > paddle2Y &&
+                        ballY < paddle2Y+PADDLE_HEIGHT) {
+                        ballSpeedX = -ballSpeedX;
+
+                        var deltaY = ballY
+                                -(paddle2Y+PADDLE_HEIGHT/2);
+                        ballSpeedY = deltaY * 0.35;
+                    } else {
+                        player1Score++; // must be BEFORE ballReset()
+                        ballReset();
+                    }
+                }
+                if(ballY < 0) {
+                    ballSpeedY = -ballSpeedY;
+                }
+                if(ballY > canvas.height) {
+                    ballSpeedY = -ballSpeedY;
+                }
+            }
+
+            // Function 6 - Draw the Net
+            function drawNet() {
+                for(var i=0;i<canvas.height;i+=40) {
+                    colorRect(canvas.width/2-1,i,2,20,'white');
+                }
+            }
+
+            // Function 7 - Draw the Canvas
+            function drawEverything() {
+                colorRect(0,0,canvas.width,canvas.height,'black');
+
+                if(showingWinScreen) {
+                    canvasContext.fillStyle = 'white';
+
+                    if(player1Score >= WINNING_SCORE) {
+                        canvasContext.fillText("Left Player Won!", 350, 200);
+                    } else if(player2Score >= WINNING_SCORE) {
+                        canvasContext.fillText("Right Player Won!", 350, 200);
+                    }
+
+                    canvasContext.fillText("Click to Continue", 350, 500);
+                    return;
+                }
+
+                drawNet();
+
+                colorRect(0,paddle1Y,PADDLE_THICKNESS,PADDLE_HEIGHT,'white');
+
+                colorRect(canvas.width-PADDLE_THICKNESS,paddle2Y,PADDLE_THICKNESS,PADDLE_HEIGHT,'white');
+
+                colorCircle(ballX, ballY, 10, 'white');
+
+                canvasContext.fillText(player1Score, 100, 100);
+                canvasContext.fillText(player2Score, canvas.width-100, 100);
+            }
+
+            // Function 8 - Color the Circle
+            function colorCircle(centerX, centerY, radius, drawColor) {
+                canvasContext.fillStyle = drawColor;
+                canvasContext.beginPath();
+                canvasContext.arc(centerX, centerY, radius, 0,Math.PI*2,true);
+                canvasContext.fill();
+            }
+
+            // Function 9 - Color the Rectangle/Canvas
+            function colorRect(leftX,topY, width,height, drawColor) {
+                canvasContext.fillStyle = drawColor;
+                canvasContext.fillRect(leftX,topY, width,height);
+            }
+        </script>
+    </body>
+</html>
