@@ -1,0 +1,166 @@
+<!--My Games (games.anikethchavare.com) - rock-paper-scissors.html-->
+
+<!--Copyright 2025 Aniketh Chavare <anikethchavare.work@protonmail.com>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!--Meta-->
+        <meta charset="utf-8">
+        <meta name="description" content="This is a simple game of Rock, Paper, and Scissors.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="Aniketh Chavare">
+        <meta name="copyright" content="Aniketh Chavare">
+
+        <!--Response Headers-->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-Security-Policy" content="style-src 'self' 'nonce-{{ css_nonce }}'; script-src 'self' 'nonce-{{ js_nonce }}' https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js; img-src 'self' https://cdn-icons-png.flaticon.com/512/5930/5930147.png;">
+
+        <!--Title & Favicon-->
+        <title>RPS | Aniketh Chavare</title>
+        <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/5930/5930147.png">
+
+        <!--CSS-->
+        <style nonce="{{ css_nonce }}">
+            /* Body */
+            body {
+                background-color: antiquewhite;
+            }
+
+            /* Headings */
+            #heading {
+                font-family: Arial;
+                font-weight: bold;
+                font-size: 35px;
+                margin-top: 55px;
+            }
+
+            #heading-2 {
+                font-family: Arial;
+                font-size: 19px;
+            }
+
+            /* Play Again */
+            #playAgain {
+                font-family: Arial;
+                font-size: 20px;
+                display: none;
+                margin-top: 50px;
+            }
+
+            /* Form */
+            #form {
+                font-family: Arial;
+                margin-top: 60px;
+            }
+
+            #submit {
+                padding: 7px;
+                height: 35px;
+                width: 80px;
+                background-color: transparent;
+                border-radius: 4px;
+                border: 1.9px solid black;
+                cursor: pointer;
+                margin-top: 10px;
+                transition: .3s;
+            }
+
+            #submit:hover {
+                background-color: black;
+                color: antiquewhite;
+            }
+
+            /* Confetti */
+            #confetti-canvas {
+                position:absolute;
+                top:0;
+            }
+        </style>
+    </head>
+    <body>
+        <!--Heading-->
+        <center><p id="heading">Rock Paper Scissors</p></center>
+        <center><p id="heading-2">This is a simple game of Rock, Paper, and Scissors.</p></center>
+
+        <!--Form-->
+        <center>
+            <form id="form">
+                <label for="choice">Your Choice:</label>
+                <input type="text" id="choice" name="choice" autofocus><br><br>
+            </form>
+            <button type="submit" form="form" value="Submit" id="submit">Submit</button>
+        </center>
+
+        <!--Play Again-->
+        <center><p id="playAgain">Click <a href="">here</a> to play again.</p></center>
+
+        <!--JavaScript-->
+        <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+        <script nonce="{{ js_nonce }}">
+            // Confetti
+            const jsConfetti = new JSConfetti();
+
+            // Preventing the Form from Refreshing the Page
+            document.getElementById("form").addEventListener("submit", function(event) {
+                event.preventDefault();
+            })
+
+            // OnClick - Play
+            document.getElementById("submit").addEventListener("click", function() {
+                play();
+            });
+
+            // Function 1 - Play
+            function play() {
+                // Variables
+                var result;
+                const user = document.getElementById("choice").value.toLowerCase();
+                const computer = ["rock", "paper", "scissors"][Math.floor(Math.random() * 3)];
+
+                // Validating the Choice
+                if (!["rock", "paper", "scissors"].includes(user)) {
+                    // Alerting the User
+                    alert("Please enter a valid input (rock, paper, or scissors).")
+                } else {
+                    // Checking and Setting the Result
+                    if (user == computer) {
+                        result = "It's a Draw!"
+                    } else if (
+                        (user == "rock" && computer == "scissors") ||
+                        (user == "paper" && computer == "rock") ||
+                        (user == "scissors" && computer == "paper")
+                    ) {
+                        result = "You Win!"
+
+                        // Setting the Confetti
+                        jsConfetti.addConfetti({confettiNumber: 500});
+                        setInterval(() => { jsConfetti.addConfetti({confettiNumber: 500});}, 3000);
+                    } else {
+                        result = "You Lose!"
+                    }
+
+                    // DOM
+                    document.getElementById("form").style.display = "none";
+                    document.getElementById("submit").style.display = "none";
+                    document.getElementById("playAgain").style.display = "block";
+
+                    document.getElementById("heading").innerHTML = result;
+                    document.getElementById("heading-2").innerHTML = "<b>You:</b> " + user.charAt(0).toUpperCase() + user.slice(1) + "<br> <b>Computer:</b> " + computer.charAt(0).toUpperCase() + computer.slice(1);
+                }
+            }
+        </script>
+    </body>
+</html>

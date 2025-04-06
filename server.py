@@ -36,3 +36,9 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=False,
 async def app_tennis(request: Request, response: Response):
     # Returning the HTML Template
     return Jinja2Templates(directory="one-page").TemplateResponse("tennis.html", {"request": request, "css_nonce": secrets.token_urlsafe(32), "js_nonce": secrets.token_urlsafe(32)})
+
+# Rock Paper Scissors (App)
+@app.get("/rps")
+async def app_rockpaperscissors(request: Request, response: Response):
+    # Returning the HTML Template
+    return Jinja2Templates(directory="one-page").TemplateResponse("rock-paper-scissors.html", {"request": request, "css_nonce": secrets.token_urlsafe(32), "js_nonce": secrets.token_urlsafe(32)})
