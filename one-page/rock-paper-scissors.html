@@ -19,18 +19,23 @@ limitations under the License.-->
     <head>
         <!--Meta-->
         <meta charset="utf-8">
-        <meta name="description" content="This is a simple game of Rock, Paper, and Scissors.">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="index, follow">
         <meta name="author" content="Aniketh Chavare">
         <meta name="copyright" content="Aniketh Chavare">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="This is a simple game of Rock, Paper, and Scissors.">
 
         <!--Response Headers-->
+        <meta http-equiv="Permissions-Policy" content="()">
+        <meta http-equiv="Cache-Control" content="no-cache">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta http-equiv="Content-Security-Policy" content="style-src 'self' 'nonce-{{ css_nonce }}'; script-src 'self' 'nonce-{{ js_nonce }}' https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js; img-src 'self' https://cdn-icons-png.flaticon.com/512/5930/5930147.png;">
+        <meta http-equiv="X-Content-Type-Options" content="nosniff">
+        <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+        <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload;">
+        <meta http-equiv="Content-Security-Policy" content="style-src 'self' 'nonce-{{ css_nonce }}'; script-src 'self' 'nonce-{{ js_nonce }}' https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js; img-src 'self'; object-src 'none'; base-uri 'self'; upgrade-insecure-requests; block-all-mixed-content;">
 
-        <!--Title & Favicon-->
+        <!--Title-->
         <title>RPS | Aniketh Chavare</title>
-        <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/5930/5930147.png">
 
         <!--CSS-->
         <style nonce="{{ css_nonce }}">
