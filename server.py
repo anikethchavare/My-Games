@@ -42,6 +42,18 @@ async def app_favicon(request: Request):
     # Returning the File
     return FileResponse(os.getcwd().replace(os.sep, "/") + "/media/favicon.png", status_code=200)
 
+# Robots (App)
+@app.get("/robots.txt")
+async def app_robots(request: Request):
+    # Returning the File
+    return FileResponse(os.getcwd().replace(os.sep, "/") + "/robots.txt", status_code=200)
+
+# Sitemap (App)
+@app.get("/sitemap.xml")
+async def app_sitemap(request: Request):
+    # Returning the File
+    return FileResponse(os.getcwd().replace(os.sep, "/") + "/sitemap.xml", status_code=200)
+
 # Tennis (App)
 @app.get("/tennis")
 async def app_tennis(request: Request):

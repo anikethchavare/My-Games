@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://games.anikethchavare.com/sitemap.xml
