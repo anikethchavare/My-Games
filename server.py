@@ -1,7 +1,7 @@
 # My Games (games.anikethchavare.com) - server.py
 
 '''
-Copyright 2025 Aniketh Chavare <anikethchavare.work@protonmail.com>
+Copyright 2025 Aniketh Chavare <aniketh@anikethchavare.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,13 +21,11 @@ import os
 import secrets
 
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
-
-# Variables
-templates_onepage = Jinja2Templates(directory="one-page")
 
 # Initializing the "App" Server
 app = FastAPI(docs_url=None, redoc_url=None)
@@ -35,6 +33,12 @@ app = FastAPI(docs_url=None, redoc_url=None)
 # Configuring Middleware
 app.add_middleware(HTTPSRedirectMiddleware)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=False, allow_methods=["*"], allow_headers=["*"])
+
+# Mounting Assets
+app.mount("/css", StaticFiles(directory="templates/css"), name="/css")
+app.mount("/fonts", StaticFiles(directory="templates/fonts"), name="/fonts")
+app.mount("/images", StaticFiles(directory="templates/images"), name="/images")
+app.mount("/js", StaticFiles(directory="templates/js"), name="/js")
 
 # Favicon (App)
 @app.get("/favicon.ico")
@@ -54,11 +58,37 @@ async def app_sitemap(request: Request):
     # Returning the File
     return FileResponse(os.getcwd().replace(os.sep, "/") + "/sitemap.xml", status_code=200)
 
+# Index (App)
+@app.get("/")
+async def app_index(request: Request):
+    # Fetching the HTML Template
+    response = Jinja2Templates(directory="templates").TemplateResponse("index.html", {"request": request})
+
+    # Modifying the HTTP Headers
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
+
+    # Returning the HTML Template
+    return response
+
+# About (App)
+@app.get("/about")
+async def app_index(request: Request):
+    # Fetching the HTML Template
+    response = Jinja2Templates(directory="templates").TemplateResponse("about.html", {"request": request})
+
+    # Modifying the HTTP Headers
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
+
+    # Returning the HTML Template
+    return response
+
 # Tennis (App)
 @app.get("/tennis")
 async def app_tennis(request: Request):
     # Fetching the HTML Template
-    response = templates_onepage.TemplateResponse("tennis.html", {"request": request, "css_nonce": secrets.token_urlsafe(32), "js_nonce": secrets.token_urlsafe(32)})
+    response = Jinja2Templates(directory="templates").TemplateResponse("tennis.html", {"request": request, "css_nonce": secrets.token_urlsafe(32), "js_nonce": secrets.token_urlsafe(32)})
 
     # Modifying the HTTP Headers
     response.headers["X-Frame-Options"] = "SAMEORIGIN"
@@ -71,7 +101,7 @@ async def app_tennis(request: Request):
 @app.get("/rps")
 async def app_rockpaperscissors(request: Request):
     # Fetching the HTML Template
-    response = templates_onepage.TemplateResponse("rock-paper-scissors.html", {"request": request, "css_nonce": secrets.token_urlsafe(32), "js_nonce": secrets.token_urlsafe(32)})
+    response = Jinja2Templates(directory="templates").TemplateResponse("rock-paper-scissors.html", {"request": request, "css_nonce": secrets.token_urlsafe(32), "js_nonce": secrets.token_urlsafe(32)})
 
     # Modifying the HTTP Headers
     response.headers["X-Frame-Options"] = "SAMEORIGIN"
@@ -84,7 +114,7 @@ async def app_rockpaperscissors(request: Request):
 @app.exception_handler(404)
 async def app_error404(request: Request, exec: HTTPException):
     # Fetching the HTML Template
-    response = templates_onepage.TemplateResponse("error-404.html", {"request": request, "css_nonce": secrets.token_urlsafe(32)})
+    response = Jinja2Templates(directory="templates").TemplateResponse("error-404.html", {"request": request, "css_nonce": secrets.token_urlsafe(32)})
 
     # Modifying the HTTP Headers
     response.headers["X-Frame-Options"] = "SAMEORIGIN"

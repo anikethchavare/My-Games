@@ -4,6 +4,13 @@ This is the changelog file of My Games (games.anikethchavare.com).
 
 **Note:** All the dates below are in the IST time format.
 
+### <i>Commit 5 (23rd June 2025)</i>
+
+1. Updated the Python packages at "requirements.txt".
+2. Changed my email address to "aniketh@anikethchavare.com".
+3. Restructured the project's directory.
+4. Created the pages "Home" and "About" and deployed them at routes "/" and "/about" respectively.
+
 ### <i>Commit 4 (9th April 2025)</i>
 
 1. Removed the "robots" meta tag from all web pages.
